@@ -11,13 +11,18 @@
             self::process($path, $controller, 'post');
         }
 
-        static function process($path, $controller ,$method = 'get'){
+        static function process($path, $params,$method = 'get'){
+            $pattern = preg_replace("/{.[^}$]}/","(.*)",$path);
+            $pattern = str_replace('/','\/',$pattern);
+
             if(!array_key_exists($method,self::$routes)){
-               self::$routes[$method] = [
-                   'path' => []
-               ];
+                self::$routes[$method] = [];
             }
 
-            array_push(self::$routes[$method]['path'], $path);
+            array_push(self::$routes[$method], [
+                'pattern' => "/^{$pattern}$/",
+                'controller' => $params[0],
+                'func' => $params[1]
+            ]);
         }
     }

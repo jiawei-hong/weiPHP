@@ -4,17 +4,23 @@
     $uri = clearEmpty(explode('/', str_replace('/weiphp', '', $_SERVER['REQUEST_URI'])));
     $uriMethod = strtolower($_SERVER['REQUEST_METHOD']);
     $uriCount = count($uri);
+    $isMatch = false;
 
-    foreach(Route::$routes[$uriMethod]['path'] as $files){
-        $path = clearEmpty(explode('/', $files));
-        $pathCount = count($path);
-        $pathCorrect = false;
+    foreach(Route::$routes[$uriMethod] as $route){
+        $uriPath = str_replace('/weiphp', '', $_SERVER['REQUEST_URI']);
+        preg_match($route['pattern'], $uriPath,$matches);
 
-        if($pathCount == $uriCount){
-            for($i=0;$i< count($uri);$i++){
-                $hasBigBraces = str_contains($path[$i], '{') && str_contains($path[$i], '}');
+        if(count($matches) > 0){
+            $isMatch = true;
+            $root = $_SERVER['DOCUMENT_ROOT'] . '/weiphp/';
+            include("{$root}{$route['controller']}.php");
+            $funcName = $route['func'];
 
-                // 還沒寫路由匹配 ...
-            }
+            $x = (new $route['controller'])->$funcName();
+
+            var_dump($x);
         }
     }
+
+    if(!$isMatch)
+        http_response_code(404);

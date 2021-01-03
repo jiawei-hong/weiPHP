@@ -1,4 +1,7 @@
 <?php
     include('../Route.php');
 
-    Route::get('/user/{id}', 'userController');
+    use App\Controllers\MainController;
+
+    Route::get('/user/{id}', [MainController::class, 'index']);
+    Route::get('/users/{id}', [MainController::class, 'index']);
