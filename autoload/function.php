@@ -1,6 +1,7 @@
 <?php
-    function test() : void{
-        echo 1234;
+    function dd(...$args){
+        var_dump($args);
+        exit;
     }
 
     function clearEmpty($array): array {

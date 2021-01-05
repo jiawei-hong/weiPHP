@@ -12,13 +12,14 @@
 
         if(count($matches) > 0){
             $isMatch = true;
-            $root = $_SERVER['DOCUMENT_ROOT'] . '/weiphp/';
+            $root = "{$_SERVER['DOCUMENT_ROOT']}/weiphp/";
             include("{$root}{$route['controller']}.php");
             $funcName = $route['func'];
+            $controllerFunc = (new $route['controller'])->$funcName();
 
-            $x = (new $route['controller'])->$funcName();
-
-            var_dump($x);
+            if(!is_null($controllerFunc)){
+                dd($controllerFunc);
+            }
         }
     }
 
