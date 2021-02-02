@@ -7,9 +7,22 @@
 
         public function view($file, $params = []){
             $root = "{$_SERVER['DOCUMENT_ROOT']}/weiphp/";
-            $viewsPath = $root . "app/views/{$file}.php";
+            $viewsPath = array_map(function($d){
+                return $d;
+            },glob("{$root}/app/views/*"));
+            $input = preg_quote("{$file}.wei.php", '~');
+            $result = preg_grep("~{$input}$~", $viewsPath);
+            
             header('Content-Type: text/html;charset=UTF-8');
-            $this->htmlPreProcessing($viewsPath, $params);
+
+            if(count($result) > 0){
+                $viewPath = "{$root}/app/views/{$file}.wei.php";
+                $this->htmlPreProcessing($viewPath, $params);
+            }else{
+                echo "<pre style='background-color: #ddd;font-size: 28px;'>";
+                throw new Exception('Undefind Template: ' . $file);
+                echo "</pre>";
+            }
         }
 
         public function htmlPreProcessing($filename, $params){
